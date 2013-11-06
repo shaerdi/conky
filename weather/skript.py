@@ -3,7 +3,9 @@
 from lxml import etree
 import time,os,sys,shutil
 
-url = 'http://api.openweathermap.org/data/2.5/forecast/daily?q=Chur&cnt=3&mode=xml&units=metric'
+location = 'Chur'
+
+url = 'http://api.openweathermap.org/data/2.5/forecast/daily?q='+location+'&cnt=3&mode=xml&units=metric'
 
 parsed = etree.parse(url)
 
