@@ -1,7 +1,7 @@
 My lua conky
 ============
 
-Wheater
+Weather
 -------
 
 * Data from openweathermap.com
