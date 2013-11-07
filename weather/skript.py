@@ -35,7 +35,7 @@ for i,pic in enumerate(syms):
     try:
         shutil.copy(path+'/pics/'+pic+'.png', path+'/pics/current/' + str(i))
     except IOError:
-        shutil.copy(path+'/pics/err.png', path+'/pics/current' + str(i))
+        shutil.copy(path+'/pics/err.png', path+'/pics/current/' + str(i))
 
 
 with open(path+'/data/testout','w') as myFile:
