@@ -1,2 +1,3 @@
 weather/data/**/*
+weather/data
 *.swp
