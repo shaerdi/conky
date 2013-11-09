@@ -46,7 +46,7 @@ for i,pic in enumerate(syms):
         shutil.copy(path+'/pics/err.png', path+'/pics/current/' + str(i))
 
 
-with open(path+'/data/testout','w') as myFile:
+with open(path+'/data/currentweather','w') as myFile:
     for d in zip(days,names,tempsMin,tempsMax):
         myFile.write(','.join(d))
         myFile.write('\n')
