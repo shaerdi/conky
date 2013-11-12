@@ -31,6 +31,14 @@ tempsMin = ['{: >6.2f} C'.format(t) for t in tempsMin]
 pathname = os.path.dirname(sys.argv[0])
 path = os.path.abspath(pathname)
 
+def ensure_dir(f):
+    d = os.path.dirname(f)
+    if not os.path.exists(d):
+        os.makedirs(d)
+
+ensure_dir(path+'/data/')
+ensure_dir(path+'/pics/current/')
+
 for i,pic in enumerate(syms):
     try:
         shutil.copy(path+'/pics/'+pic+'.png', path+'/pics/current/' + str(i))
@@ -38,7 +46,7 @@ for i,pic in enumerate(syms):
         shutil.copy(path+'/pics/err.png', path+'/pics/current/' + str(i))
 
 
-with open(path+'/data/testout','w') as myFile:
+with open(path+'/data/currentweather','w') as myFile:
     for d in zip(days,names,tempsMin,tempsMax):
         myFile.write(','.join(d))
         myFile.write('\n')
