@@ -18,7 +18,7 @@ temperature_unit celsius
 # Window specifications #
 
 own_window yes
-own_window_type override
+#own_window_type override
 own_window_transparent yes
 own_window_hints undecorate,sticky,skip_taskbar,skip_pager,below
 
@@ -90,12 +90,12 @@ ${color 0066FF}${goto 125}Net
 ##################################
 ${voffset 4}${font DroidSans:bold:size=8.25}${color4}WETTER in ${texeci 3600 /home/simon/.conky/weather/skript.py}${offset 8}${color8}${voffset -2}${hr 2}${font}
 
-${color 0066FF}${font caviar dreams:size=8}${goto 15}${texeci 3600 cat /home/simon/.conky/weather/data/testout | sed -n 1p | tr ',' '\n' | sed -n 1p}${goto 85}${texeci 3600 cat /home/simon/.conky/weather/data/testout | sed -n 2p | tr ',' '\n' | sed -n 1p}${goto 160}${texeci 3600 cat /home/simon/.conky/weather/data/testout | sed -n 3p | tr ',' '\n' | sed -n 1p}
+${color 0066FF}${font caviar dreams:size=8}${goto 15}${texeci 100 cat /home/simon/.conky/weather/data/testout | sed -n 1p | tr ',' '\n' | sed -n 1p}${goto 85}${execi 100 cat /home/simon/.conky/weather/data/testout | sed -n 2p | tr ',' '\n' | sed -n 1p}${goto 160}${texeci 100 cat /home/simon/.conky/weather/data/testout | sed -n 3p | tr ',' '\n' | sed -n 1p}
 ${image /home/simon/.conky/weather/pics/current/0 -p   0,610}
 ${image /home/simon/.conky/weather/pics/current/1 -p  75,610}
 ${image /home/simon/.conky/weather/pics/current/2 -p 140,610}
-${voffset 10}${goto 5}${texeci 3600 cat /home/simon/.conky/weather/data/testout | sed -n 1p | tr ',' '\n' | sed -n 3p}${goto 80}${texeci 3600 cat /home/simon/.conky/weather/data/testout | sed -n 2p | tr ',' '\n' | sed -n 3p}${goto 150}${texeci 3600 cat /home/simon/.conky/weather/data/testout | sed -n 3p | tr ',' '\n' | sed -n 3p}
-${goto 5}${texeci 3600 cat /home/simon/.conky/weather/data/testout | sed -n 1p | tr ',' '\n' | sed -n 4p}${goto 80}${texeci 3600 cat /home/simon/.conky/weather/data/testout | sed -n 2p | tr ',' '\n' | sed -n 4p}${goto 150}${texeci 3600 cat /home/simon/.conky/weather/data/testout | sed -n 3p | tr ',' '\n' | sed -n 4p}
+${voffset 10}${goto 5}${texeci 100 cat /home/simon/.conky/weather/data/testout | sed -n 1p | tr ',' '\n' | sed -n 3p}${goto 80}${texeci 100 cat /home/simon/.conky/weather/data/testout | sed -n 2p | tr ',' '\n' | sed -n 3p}${goto 150}${texeci 100 cat /home/simon/.conky/weather/data/testout | sed -n 3p | tr ',' '\n' | sed -n 3p}
+${goto 5}${texeci 100 cat /home/simon/.conky/weather/data/testout | sed -n 1p | tr ',' '\n' | sed -n 4p}${goto 80}${texeci 100 cat /home/simon/.conky/weather/data/testout | sed -n 2p | tr ',' '\n' | sed -n 4p}${goto 150}${texeci 100 cat /home/simon/.conky/weather/data/testout | sed -n 3p | tr ',' '\n' | sed -n 4p}
 #${voffset -55}${font RadioSpace:size=34}${color3}${execi 1800 /home/simon/.conky/weather/weather.sh "Toronto" ctbm}${font}${voffset -28}${goto 33}${font Weather:size=42}${color3}y${font}
 #${voffset -38}${font Ubuntu:size=8.63}${color5}${execi 1800 /home/simon/.conky/weather/weather.sh "Toronto" cttm}${font}
 #${voffset -39}${font KRARound:size=36}${color3}${goto 195}I${font}
