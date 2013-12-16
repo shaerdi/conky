@@ -1,0 +1,75 @@
+# Conky settings #
+background no
+update_interval 1
+
+
+override_utf8_locale yes
+
+double_buffer yes
+no_buffers yes
+
+text_buffer_size 2048
+#imlib_cache_size 0
+
+temperature_unit celsius
+
+# Window specifications #
+
+own_window yes
+#own_window_type override
+own_window_transparent yes
+own_window_hints undecorate,sticky,skip_taskbar,skip_pager,below
+
+border_inner_margin 0
+border_outer_margin 0
+
+minimum_size 100 450
+maximum_width 100
+
+alignment bl
+gap_x 0
+gap_y 0
+
+# Graphics settings #
+draw_shades no
+draw_outline no
+draw_borders no
+draw_graph_borders no
+
+# Text settings #
+use_xft yes
+xftfont caviar dreams:size=8
+xftalpha 0.5
+
+uppercase no
+
+temperature_unit celsius
+
+
+default_color FFFFFF
+
+# Lua Load  #
+lua_load ~/.conky/cluster/clock_rings.lua
+lua_draw_hook_pre cluster_rings
+
+template0 ${color FFFFFF}${voffset 46}${goto 5}${execi 5 cat ~/.conky/cluster/data/clusterstatus | sed -n /^0\1/p | cut -d ' ' -f 3}
+
+TEXT
+${texeci 60 ssh haerdi@hpc01-server topotop -p > ~/.conky/cluster/data/clusterstatus} \
+${texeci 60 wget -qO ~/.conky/cluster/data/clusterstatusW http://hpc01-cluster/cgi-bin/freenodes}
+#
+${voffset -10}
+${template0 1}
+${color FFFFFF}${voffset -12}${goto 5}${execi 2 echo "`cat ~/.conky/cluster/data/clusterstatusW | sed -n '/on hpc01/,/on hpc0[1-9]/p' | wc -l`-2" | bc | sed 's/.*/&\/2/'| sed '/-/d'}
+${template0 2}
+${color FFFFFF}${voffset -12}${goto 5}${execi 2 echo "`cat ~/.conky/cluster/data/clusterstatusW | sed -n '/on hpc02/,/on hpc0[1-9]/p' | wc -l`-2" | bc | sed 's/.*/&\/2/'| sed '/-/d'}
+${template0 3}                                                                                                            
+${color FFFFFF}${voffset -12}${goto 5}${execi 2 echo "`cat ~/.conky/cluster/data/clusterstatusW | sed -n '/on hpc03/,/on hpc0[1-9]/p' | wc -l`-2" | bc | sed 's/.*/&\/2/'| sed '/-/d'}
+${template0 4}                                                                                                            
+${color FFFFFF}${voffset -12}${goto 5}${execi 2 echo "`cat ~/.conky/cluster/data/clusterstatusW | sed -n '/on hpc04/,/on hpc0[1-9]/p' | wc -l`-2" | bc | sed 's/.*/&\/2/'| sed '/-/d'}
+${template0 5}                                                                                                            
+${color FFFFFF}${voffset -12}${goto 5}${execi 2 echo "`cat ~/.conky/cluster/data/clusterstatusW | sed -n '/on hpc05/,/on hpc0[1-9]/p' | wc -l`-2" | bc | sed 's/.*/&\/2/'| sed '/-/d'}
+${template0 6}                                                                                                            
+${color FFFFFF}${voffset -12}${goto 5}${execi 2 echo "`cat ~/.conky/cluster/data/clusterstatusW | sed -n '/on hpc06/,/on hpc0[1-9]/p' | wc -l`-2" | bc | sed 's/.*/&\/2/'| sed '/-/d'}
+${template0 7}
+${color FFFFFF}${voffset -12}${goto 5}${execi 2 echo "`cat ~/.conky/cluster/data/clusterstatusW | sed -n '/on hpc07/,$p' | wc -l`-1" | bc | sed 's/.*/&\/2/'| sed '/-/d'}

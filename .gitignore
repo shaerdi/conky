@@ -1,3 +1,9 @@
-weather/data
+# temporary files
 *.swp
+
+# Wheater conky
+weather/data
 weather/pics/current
+
+# Cluster conky
+cluster/data
