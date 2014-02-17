@@ -40,18 +40,78 @@ function draw_ring(cr,t,pt)
     local angle_f=ea*(2*math.pi/360)-math.pi/2
     local t_arc=t*(angle_f-angle_0)
 
-    -- Draw background ring
+    local radius_c = pt["radius"]*0.7
 
-    cairo_arc(cr,xc,yc,ring_r,angle_0,angle_f)
-    cairo_set_source_rgba(cr,rgb_to_r_g_b(bgc,bga))
-    cairo_set_line_width(cr,ring_w)
-    cairo_stroke(cr)
-    
-    -- Draw indicator ring
 
-    cairo_arc(cr,xc,yc,ring_r,angle_0,angle_0+t_arc)
-    cairo_set_source_rgba(cr,rgb_to_r_g_b(fgc,fga))
-    cairo_stroke(cr)        
+    if pt["clusterNode"]["state"]==1 then
+        -- Draw background ring
+
+        cairo_set_source_rgba(cr,rgb_to_r_g_b(bgc,bga))
+        cairo_arc(cr,xc,yc,ring_r,angle_0,angle_f)
+        cairo_set_line_width(cr,ring_w)
+        cairo_stroke(cr)
+        
+        -- Draw indicator ring
+        local isOffline = tonumber(pt["clusterNode"]["offline"])
+
+        cairo_arc(cr,xc,yc,ring_r,angle_0,angle_0+t_arc)
+        if  isOffline== 1 then
+            cairo_set_source_rgba(cr,rgb_to_r_g_b(0xFF0000,0.5))
+        else
+            cairo_set_source_rgba(cr,rgb_to_r_g_b(fgc,fga))
+        end
+        cairo_stroke(cr)        
+
+    -- Draw small rings
+        local maxCpu = pt["clusterNode"]["ncpus"]
+        --local radius_c = pt["radius"]*0.7
+        local phi,xr,yr
+        local threads = tonumber(pt["clusterNode"]["threads"])
+        print(threads)
+        for i = 1, maxCpu do
+            phi = angle_0 + (i-1+0.5)/maxCpu * 2*math.pi 
+            xr = radius_c * math.cos(phi)
+            yr = radius_c * math.sin(phi)
+            cairo_arc(cr,xc+xr,yc+yr,2,0,2*math.pi)
+            if i <= threads then
+                cairo_set_source_rgba(cr,rgb_to_r_g_b(0xff0000,1))
+            else
+                if  isOffline== 1 then
+                    cairo_set_source_rgba(cr,rgb_to_r_g_b(0x000000,0.5))
+                else
+                    cairo_set_source_rgba(cr,rgb_to_r_g_b(0xff0000,0.3))
+                end
+            end
+            cairo_fill(cr)
+            cairo_stroke(cr)
+        end
+    elseif pt["clusterNode"]["state"]==2 then
+        local user = tonumber(pt["clusterNode"]["numUser"])
+        local maxUser = 2
+        cairo_set_source_rgba(cr,rgb_to_r_g_b(fgc,0.3))
+        if user > maxUser then
+            fgc = 0xFF0000
+            fga = 0.8
+        end
+        if user > 1 then
+            cairo_set_source_rgba(cr,rgb_to_r_g_b(fgc,fga))
+        end
+        cairo_arc(cr,xc+1,yc,ring_r,-1/2*math.pi,1/2*math.pi)
+        cairo_fill(cr)
+        cairo_stroke(cr)
+        if user > 0 then
+            cairo_set_source_rgba(cr,rgb_to_r_g_b(fgc,fga))
+        end
+        cairo_arc(cr,xc-1,yc,ring_r,-3/2*math.pi,-1/2*math.pi)
+        cairo_fill(cr)
+        cairo_stroke(cr)
+
+    else
+        cairo_set_source_rgba(cr,rgb_to_r_g_b(0xff0000,0.3))
+        cairo_arc(cr,xc,yc,ring_r,angle_0,angle_f)
+        --cairo_set_line_width(cr,ring_w)
+        cairo_stroke(cr)
+    end
 end
 
 function explode(div,str)
@@ -87,7 +147,6 @@ function conky_cluster_rings()
     local function setup_rings(cr,pt)
         local value = pt["value"]
         pct=value/pt["max"]
-        
         draw_ring(cr,pct,pt)
     end
 
@@ -96,22 +155,40 @@ function conky_cluster_rings()
     end
 
     local str
-    str=string.format('${%s %s}','exec','cat ~/.conky/cluster/data/clusterstatus')
-    --str="01 100\n02 30"
+    str=string.format('${%s %s}','exec','cat ~/.conky/cluster/data/clusterStatus')
     str=conky_parse(str)
     
-    local k
-    local strarr = {}
+    
+    local dataString={}
     for line in str:gmatch("[^\r\n]+") do 
+        table.insert(dataString,line)
+    end
+
+    --for key,value in pairs(dataString) do print(key,value) end
+
+    local clusterNodes = {}
+    for i, line in ipairs(dataString) do
         k = explode(" ",line)
-        strarr[k[1]*1]=k[2]
+        table.insert(clusterNodes,{})
+        if k[1]=="Linux" then
+            clusterNodes[i]["state"] = 1
+            clusterNodes[i]["ncpus"] = k[3]
+            clusterNodes[i]["threads"] = k[2]
+            clusterNodes[i]["load"] = k[4]
+            clusterNodes[i]["offline"] = k[5]
+        elseif k[1]=="Windows" then
+            clusterNodes[i]["state"] = 2
+            clusterNodes[i]["numUser"] = k[2]
+        else 
+            clusterNodes[i]["state"] = 0
+        end
     end
 
     local rings = {}
-    for i=1,7 do
+    for i, n in pairs(clusterNodes) do
         rings[i] = {}
-        if setContains(strarr,i) then
-            rings[i]["value"] = strarr[i]
+        if n['state']==1 then
+            rings[i]["value"] = n["load"]*100
             rings[i]["bg_colour"]=0xffffff
         else
             rings[i]["value"] = 0
@@ -126,7 +203,8 @@ function conky_cluster_rings()
         rings[i]["radius"]=25
         rings[i]["thickness"]=4
         rings[i]["start_angle"]=-90
-        rings[i]["end_angle"]=180
+        rings[i]["end_angle"]=270
+        rings[i]["clusterNode"]=n
     end
 
     if conky_window==nil then return end
