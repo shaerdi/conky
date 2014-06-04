@@ -2,7 +2,6 @@ import urllib.request
 import re
 import os
 import subprocess
-print ()
 class cluster:
     def __init__(self):
         self.linuxCallString = 'ssh haerdi@hpc01-server pbsnodes'
@@ -16,14 +15,27 @@ class cluster:
     def getWindowsNodes(self):
         url = 'http://hpc01-server/cgi-bin/freenodes'
         page = urllib.request.urlopen(url).read().decode('utf8')
-        serversOnline = ['users on hpc{:02d}-server'.format(x) in page 
-                          for x in range(1,self.numNodes+1)]
-        serverUsers = ['hpc{:02d}-server:'.format(n) 
-                        for n in range(1,self.numNodes+1)]
-        for i,node in enumerate(self.nodeList):
-            if serversOnline[i]:
+        page = page.replace(
+                '<META HTTP-EQUIV="refresh" CONTENT="120">\n<br>',
+                '')
+        serverList = page.replace('\n','').replace('<br>','\n').split('\n\n')
+
+        regex = re.compile('hpc(\d+)')
+        numUsers = [
+                    len([a for a in x.split('\n') if a!=''])-1 
+                    for x in serverList
+                   ]
+
+        serverDict = dict(zip(
+                        [regex.findall(x)[0] for x in serverList], # Server Nr
+                        numUsers  
+                     ))
+
+        for node in self.nodeList:
+            server = node['number'] 
+            if server in serverDict:
                 node['state']=2
-                node['nUsers'] = page.count(serverUsers[i])
+                node['nUsers'] = serverDict[server]
 
     def findAttribute(self,text,attribute):
         floatregex = '[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?'
@@ -47,6 +59,8 @@ class cluster:
         for node in serverstatus:
             states = re.search('state.*\n',node).group()
             states = states.replace('state = ','').strip().split(',')
+            regex = re.compile('hpc(\d+)') 
+            number = regex.findall(node)[0]
             #state = states.count('offline') + states.count('down')
             if not 'down' in states:
                 state = 1
@@ -65,7 +79,8 @@ class cluster:
                 jobs = 0
                 offline = 1
             self.nodeList.append( 
-                    {'state'     : state,
+                    {'number'    : number,
+                     'state'     : state,
                      'jobs'      : jobs,
                      'ncpus'     : ncpus,
                      'load'      : loadave / ncpus,
@@ -73,8 +88,9 @@ class cluster:
                      })
 
     def saveFile(self):
+        sortedNodeList = sorted(self.nodeList,key=lambda k: k['number'])
         with open(self.fileloc,'w') as f:
-            for i,node in enumerate(self.nodeList):
+            for i,node in enumerate(sortedNodeList):
                 if node['state']==1:
                     f.write('{} {} {} {} {}\n'.format(
                         'Linux',
