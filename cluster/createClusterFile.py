@@ -21,13 +21,18 @@ class cluster:
         serverList = page.replace('\n','').replace('<br>','\n').split('\n\n')
 
         regex = re.compile('hpc(\d+)')
+
         numUsers = [
                     len([a for a in x.split('\n') if a!=''])-1 
                     for x in serverList
                    ]
 
         serverDict = dict(zip(
-                        [regex.findall(x)[0] for x in serverList], # Server Nr
+                        [
+                         regex.findall(x)[0]
+                         for x in serverList 
+                         if len(regex.findall(x))>0
+                        ], # Server Nr
                         numUsers  
                      ))
 
