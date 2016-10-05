@@ -30,7 +30,7 @@ maximum_width 200
 
 alignment br
 gap_x 35
-gap_y 55
+gap_y 35
 
 # Graphics settings #
 draw_shades no

@@ -24,10 +24,10 @@ own_window_hints undecorate,sticky,skip_taskbar,skip_pager,below
 border_inner_margin 0
 border_outer_margin 0
 
-minimum_size 100 570
-maximum_width 100
+minimum_size 570 70
+maximum_heigth 70
 
-alignment bl
+alignment tr
 gap_x 0
 gap_y 0
 

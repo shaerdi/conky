@@ -15,14 +15,6 @@ Changelog:
 *v 2011mint -- reEdit despot77 (18.02.2011)
 ]]
 
-clock_r=65
-
--- "clock_x" and "clock_y" are the coordinates of the centre of the clock, in pixels, from the top left of the Conky window.
-
-clock_x=100
-clock_y=150
-
-show_seconds=true
 
 require 'cairo'
 
@@ -194,8 +186,8 @@ function conky_cluster_rings()
             rings[i]["value"] = 0
             rings[i]["bg_colour"]=0xff0000
         end
-        rings[i]["x"]=30
-        rings[i]["y"]=i*60
+        rings[i]["x"]=i*60
+        rings[i]["y"]=30
         rings[i]["max"] = 100
         rings[i]["bg_alpha"]=0.2
         rings[i]["fg_colour"]=0x0066FF
