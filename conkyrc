@@ -1,5 +1,5 @@
 # Conky settings #
-background no
+#background no
 update_interval 1
 
 cpu_avg_samples 2
@@ -8,7 +8,7 @@ net_avg_samples 2
 override_utf8_locale yes
 
 double_buffer yes
-no_buffers yes
+#no_buffers yes
 
 text_buffer_size 2048
 #imlib_cache_size 0
@@ -18,7 +18,7 @@ temperature_unit celsius
 # Window specifications #
 
 own_window yes
-#own_window_type override
+own_window_type desktop
 own_window_transparent yes
 own_window_hints undecorate,sticky,skip_taskbar,skip_pager,below
 
@@ -55,7 +55,7 @@ lua_load ~/.conky/clock_rings.lua
 lua_draw_hook_pre clock_rings
 
 TEXT
-${voffset 8}${color 0066FF}${font caviar dreams:size=16}${time %A}${font}${voffset -8}${alignr 50}${color FFFFFF}${font caviar dreams:size=38}${time %e}${font}
+${voffset 8}${color 0066FF}${font caviar dreams:size=16}${time %A}${font}${voffset -8}${alignr 0}${color FFFFFF}${font caviar dreams:size=38}${time %e}${font}
 ${color FFFFFF}${voffset -30}${color FFFFFF}${font caviar dreams:size=18}${time %b}${font}${voffset -3} ${color FFFFFF}${font caviar dreams:size=20}${time %Y}${font}${color 0066FF}${hr}
 ${voffset 140}#${font caviar dreams:size=10}${alignr}HOME${font}
 #${font caviar dreams:size=12}${color FFFFFF}${alignr}${weather http://weather.noaa.gov/pub/data/observations/metar/stations/LSZH.html temperature temperature 30} °C${font}

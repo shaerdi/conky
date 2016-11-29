@@ -6,7 +6,7 @@ update_interval 5
 override_utf8_locale yes
 
 double_buffer yes
-no_buffers yes
+#no_buffers yes
 
 text_buffer_size 2048
 #imlib_cache_size 0
@@ -17,9 +17,9 @@ temperature_unit celsius
 
 own_window yes
 own_window_title clicky
-#own_window_type override
+own_window_type desktop
 own_window_transparent yes
-own_window_hints undecorate,sticky,skip_taskbar,skip_pager,below
+own_window_hints undecorated,sticky,skip_taskbar,skip_pager,below
 
 border_inner_margin 0
 border_outer_margin 0
