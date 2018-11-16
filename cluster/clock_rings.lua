@@ -33,8 +33,16 @@ function draw_ring(cr,t,pt)
     local t_arc=t*(angle_f-angle_0)
 
     local radius_c = pt["radius"]*0.7
+    local num = pt["clusterNode"]["number"]
 
-
+    -- show centered cluster number
+    --cairo_select_font_face(cr, "Courier", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD)
+    cairo_set_font_size(cr, 14)
+    --cairo_move_to(cr, xc/2 - extents.width/2, yc/2); 
+    cairo_set_source_rgba(cr,rgb_to_r_g_b(fgc,fga))
+    cairo_move_to(cr, xc-10, yc+4); 
+    cairo_show_text(cr,num)
+    cairo_stroke(cr)
     if pt["clusterNode"]["state"]==1 then
         -- Draw background ring
 
@@ -168,6 +176,7 @@ function conky_cluster_rings()
             clusterNodes[i]["threads"] = k[2]
             clusterNodes[i]["load"] = k[4]
             clusterNodes[i]["offline"] = k[5]
+            clusterNodes[i]["number"] = i + 15
         elseif k[1]=="Windows" then
             clusterNodes[i]["state"] = 2
             clusterNodes[i]["numUser"] = k[2]

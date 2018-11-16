@@ -4,12 +4,12 @@ import os
 import subprocess
 class cluster:
     def __init__(self):
-        self.linuxCallString = 'ssh haerdi@hpc01-server pbsnodes'
+        self.linuxCallString = 'ssh haerdi@vmhpclogin pbsnodes'
         self.fileloc = os.path.dirname(os.path.realpath(__file__)) + \
                        '/data/clusterStatus'
         self.nodeList = []
         self.getLinuxNodes()
-        self.getWindowsNodes()
+        # self.getWindowsNodes()
         self.saveFile()
 
     def getWindowsNodes(self):
@@ -66,7 +66,7 @@ class cluster:
             states = states.replace('state = ','').strip().split(',')
             regex = re.compile('hpc(\d+)') 
             number = regex.findall(node)[0]
-            #state = states.count('offline') + states.count('down')
+            usedCpus = 0
             if not 'down' in states:
                 state = 1
                 offline = 'offline' in states
@@ -74,7 +74,16 @@ class cluster:
                 loadave = self.findAttribute(node,'loadave')
                 jobs = re.search('jobs =.*\n',node)
                 if jobs is not None:
-                    jobs = len(jobs.group().split(','))
+                    jobList = jobs.group().split(',')
+                    jobList[0] = jobList[0].replace('jobs = ','')
+                    jobs = len(jobList)
+                    for job in jobList:
+                        cores = job.split('/')[0]
+                        if '-' in cores:
+                            cores = cores.split('-')
+                            usedCpus+= (int(cores[1]) - int(cores[0]) + 1)
+                        else:
+                            usedCpus+=1
                 else:
                     jobs = 0
             else:
@@ -86,7 +95,7 @@ class cluster:
             self.nodeList.append( 
                     {'number'    : number,
                      'state'     : state,
-                     'jobs'      : jobs,
+                     'jobs'      : usedCpus,
                      'ncpus'     : ncpus,
                      'load'      : loadave / ncpus,
                      'isOffline' : 1* offline,

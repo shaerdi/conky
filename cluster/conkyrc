@@ -24,12 +24,12 @@ own_window_hints undecorated,sticky,skip_taskbar,skip_pager,below
 border_inner_margin 0
 border_outer_margin 0
 
-minimum_size 570 70
+minimum_size 700 70
 maximum_heigth 70
 
 alignment tr
 gap_x 0
-gap_y 0
+gap_y 10
 
 # Graphics settings #
 draw_shades no
